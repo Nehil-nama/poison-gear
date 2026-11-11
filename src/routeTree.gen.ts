@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArmoryRouteImport } from './routes/armory'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ToxicRouteImport } from './routes/toxic'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArmoryRoute = ArmoryRouteImport.update({
+  id: '/armory',
+  path: '/armory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToxicRoute = ToxicRouteImport.update({
+  id: '/toxic',
+  path: '/toxic',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/armory': typeof ArmoryRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/toxic': typeof ToxicRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/armory': typeof ArmoryRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/toxic': typeof ToxicRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/armory': typeof ArmoryRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/toxic': typeof ToxicRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/armory' | '/cart' | '/checkout' | '/toxic'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/armory' | '/cart' | '/checkout' | '/toxic'
+  id: '__root__' | '/' | '/armory' | '/cart' | '/checkout' | '/toxic'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ArmoryRoute: typeof ArmoryRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
+  ToxicRoute: typeof ToxicRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +88,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/armory': {
+      id: '/armory'
+      path: '/armory'
+      fullPath: '/armory'
+      preLoaderRoute: typeof ArmoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/toxic': {
+      id: '/toxic'
+      path: '/toxic'
+      fullPath: '/toxic'
+      preLoaderRoute: typeof ToxicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ArmoryRoute: ArmoryRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
+  ToxicRoute: ToxicRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
