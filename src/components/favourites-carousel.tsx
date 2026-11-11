@@ -16,6 +16,18 @@ export function FavouritesCarousel() {
   const [paused, setPaused] = useState(false);
   const [addedId, setAddedId] = useState<string | null>(null);
 
+  const [radius, setRadius] = useState(600);
+
+useEffect(() => {
+  const update = () => {
+    const w = window.innerWidth;
+    setRadius(w < 640 ? 300 : w < 1024 ? 450 : 600);
+  };
+  update();
+  window.addEventListener("resize", update);
+  return () => window.removeEventListener("resize", update);
+}, []);
+
   useEffect(() => {
     if (paused) return;
     const t = window.setInterval(() => setIndex((i) => i + 1), 3200);
@@ -23,12 +35,11 @@ export function FavouritesCarousel() {
   }, [paused]);
 
   const step = 360 / count;
-  const radius = 360;
   const front = ((index % count) + count) % count;
 
   return (
     <div
-      className="relative mx-auto h-[420px] w-full max-w-5xl select-none sm:h-[500px]"
+      className="relative mx-auto h-[440px] w-full max-w-7xl select-none sm:h-[560px]"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -43,7 +54,7 @@ export function FavouritesCarousel() {
       {/* 3D ring */}
       <div
         className="absolute inset-0"
-        style={{ perspective: "1400px" }}
+        style={{ perspective: "2200px" }}
       >
         <div
           className="absolute top-1/2 left-1/2 h-0 w-0 transition-transform duration-700 ease-out"
@@ -57,7 +68,7 @@ export function FavouritesCarousel() {
             return (
               <div
                 key={product.id + i}
-                className="absolute top-0 left-0 w-44 sm:w-56"
+                className="absolute top-0 left-0 w-48 sm:w-64"
                 style={{
                   transformStyle: "preserve-3d",
                   transform: `translate(-50%, -50%) rotateY(${i * step}deg) translateZ(${radius}px)`,
