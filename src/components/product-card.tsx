@@ -2,13 +2,17 @@ import { useState } from "react";
 import { Check, Plus, Star } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
+import { useNavigate } from "@tanstack/react-router";
+import { notifyAdded } from "@/lib/notify";
 
 export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
+  const navigate = useNavigate();
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
     add(product.id);
+    notifyAdded(product.name, () => navigate({ to: "/cart" }));
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1400);
   };
@@ -22,7 +26,7 @@ export function ProductCard({ product }: { product: Product }) {
           loading="lazy"
           width={1024}
           height={1024}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="animate-in fade-in duration-700 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {product.badge && (
           <span

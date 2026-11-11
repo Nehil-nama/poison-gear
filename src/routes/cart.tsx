@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { useCart } from "@/lib/cart";
+import { useCart, FREE_SHIPPING_THRESHOLD } from "@/lib/cart";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { items, total, count, setQty, remove, clear } = useCart();
+  const { items, total, count, shipping, grandTotal, setQty, remove, clear } = useCart();
 
   if (items.length === 0) {
     return (
@@ -51,6 +51,9 @@ function CartPage() {
       </div>
     );
   }
+
+  const remaining = Math.max(FREE_SHIPPING_THRESHOLD - total, 0);
+  const progress = Math.min((total / FREE_SHIPPING_THRESHOLD) * 100, 100);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -128,6 +131,25 @@ function CartPage() {
               <h2 className="font-display text-lg font-bold uppercase tracking-widest text-foreground">
                 Order Summary
               </h2>
+
+              <div className="mt-5">
+  <p className="text-sm text-muted-foreground">
+    {remaining > 0 ? (
+      <>
+        You’re <span className="font-semibold text-primary">${remaining}</span> away from
+        free shipping
+      </>
+    ) : (
+      <span className="font-semibold text-toxic">You’ve unlocked free shipping</span>
+    )}
+  </p>
+  <div className="mt-2 h-2 overflow-hidden rounded-full bg-border">
+    <div
+      className="h-full rounded-full bg-primary shadow-[0_0_12px_var(--color-primary)] transition-all duration-500"
+      style={{ width: `${progress}%` }}
+    />
+  </div>
+</div>
               <dl className="mt-5 space-y-3 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Subtotal</dt>
@@ -135,12 +157,14 @@ function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Shipping</dt>
-                  <dd className="font-semibold text-toxic">Free</dd>
+                  <dd className={`font-semibold ${shipping === 0 ? "text-toxic" : ""}`}>
+  {shipping === 0 ? "Free" : `$${shipping}`}
+</dd>
                 </div>
                 <div className="border-t border-border pt-3">
                   <div className="flex justify-between text-base">
                     <dt className="font-display font-bold uppercase tracking-widest">Total</dt>
-                    <dd className="font-display font-bold text-primary">${total}</dd>
+                    <dd className="font-display font-bold text-primary">${grandTotal}</dd>
                   </div>
                 </div>
               </dl>

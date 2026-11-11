@@ -37,7 +37,7 @@ const fieldClass =
   "mt-1.5 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors focus:border-primary/60";
 
 function CheckoutPage() {
-  const { items, total, count, clear } = useCart();
+  const { items, total, count, shipping, grandTotal, clear } = useCart();
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
   const [payment, setPayment] = useState("demo-card");
 
@@ -119,7 +119,7 @@ function CheckoutPage() {
       orderId,
       name: String(data.get("name") ?? ""),
       email: String(data.get("email") ?? ""),
-      total,
+      total: grandTotal,
       itemCount: count,
     };
     clear();
@@ -221,7 +221,7 @@ function CheckoutPage() {
                 type="submit"
                 className="mt-8 w-full rounded-xl bg-primary py-4 font-display text-sm font-bold tracking-widest uppercase text-primary-foreground shadow-[0_0_36px_-6px_color-mix(in_oklab,var(--color-primary)_60%,transparent)] transition-colors hover:bg-primary/85"
               >
-                Place Order · ${total}
+                Place Order · ${grandTotal}
               </button>
             </form>
 
@@ -251,11 +251,13 @@ function CheckoutPage() {
               <dl className="mt-5 space-y-3 border-t border-border pt-4 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Shipping</dt>
-                  <dd className="font-semibold text-toxic">Free</dd>
+                  <dd className={`font-semibold ${shipping === 0 ? "text-toxic" : ""}`}>
+                    {shipping === 0 ? "Free" : `$${shipping}`}
+                  </dd>
                 </div>
                 <div className="flex justify-between text-base">
                   <dt className="font-display font-bold uppercase tracking-widest">Total</dt>
-                  <dd className="font-display font-bold text-primary">${total}</dd>
+                  <dd className="font-display font-bold text-primary">${grandTotal}</dd>
                 </div>
               </dl>
             </aside>

@@ -35,17 +35,34 @@ const FILTERS: Array<{ key: Category | "all"; label: string }> = [
   })),
 ];
 
+type SortKey = "featured" | "price-asc" | "price-desc" | "rating";
+const MAX_PRICE = Math.ceil(Math.max(...PRODUCTS.map((p) => p.price)) / 10) * 10;
+
 function ArmoryPage() {
   const [filter, setFilter] = useState<Category | "all">("all");
   const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<SortKey>("featured");
+  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
 
   const visible = PRODUCTS.filter((p) => {
     const matchesCategory = filter === "all" || p.category === filter;
     const matchesQuery =
       query.trim() === "" ||
       `${p.name} ${p.tagline} ${p.category}`.toLowerCase().includes(query.toLowerCase());
-    return matchesCategory && matchesQuery;
+    return matchesCategory && matchesQuery && p.price <= maxPrice;
+  }).sort((a, b) => {
+    if (sort === "price-asc") return a.price - b.price;
+    if (sort === "price-desc") return b.price - a.price;
+    if (sort === "rating") return b.rating - a.rating;
+    return 0;
   });
+
+  const clearFilters = () => {
+    setFilter("all");
+    setQuery("");
+    setSort("featured");
+    setMaxPrice(MAX_PRICE);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -95,10 +112,56 @@ function ArmoryPage() {
             </div>
           </div>
 
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <label className="flex items-center gap-3 text-sm text-muted-foreground">
+              <span className="font-display text-xs font-bold uppercase tracking-widest">
+                Max price
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={MAX_PRICE}
+                step={10}
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                className="w-40 accent-[var(--color-primary)]"
+              />
+              <span className="w-12 font-display font-bold text-foreground">${maxPrice}</span>
+            </label>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span>
+                {visible.length} {visible.length === 1 ? "item" : "items"}
+              </span>
+              <label className="flex items-center gap-3">
+                <span className="font-display text-xs font-bold uppercase tracking-widest">
+                  Sort
+                </span>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as SortKey)}
+                  className="h-10 rounded-lg border border-input bg-card px-3 text-sm text-foreground outline-none focus:border-primary/60"
+                >
+                  <option value="featured">Featured</option>
+                  <option value="price-asc">Price: low to high</option>
+                  <option value="price-desc">Price: high to low</option>
+                  <option value="rating">Top rated</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
           {visible.length === 0 ? (
-            <p className="py-24 text-center text-muted-foreground">
-              No gear matches that search. Try another word.
-            </p>
+            <div className="py-24 text-center">
+              <p className="text-muted-foreground">
+                No gear matches those filters. Try widening your search.
+              </p>
+              <button
+                onClick={clearFilters}
+                className="mt-6 rounded-xl border border-primary/50 px-6 py-3 font-display text-xs font-bold uppercase tracking-widest text-primary transition-colors hover:bg-primary/10"
+              >
+                Clear filters
+              </button>
+            </div>
           ) : (
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {visible.map((p) => (
