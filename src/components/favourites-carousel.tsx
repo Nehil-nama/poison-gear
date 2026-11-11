@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { FAVOURITES } from "@/lib/products";
 import { useCart } from "@/lib/cart";
+import { useNavigate } from "@tanstack/react-router";
+import { notifyAdded } from "@/lib/notify";
 
 /**
  * Circular (3D ring) carousel of the most-bought gear.
@@ -10,6 +12,7 @@ import { useCart } from "@/lib/cart";
  */
 export function FavouritesCarousel() {
   const { add } = useCart();
+  const navigate = useNavigate();
   const items = FAVOURITES;
   const count = items.length;
   const [index, setIndex] = useState(0);
@@ -102,10 +105,11 @@ useEffect(() => {
                       <button
                         aria-label={`Add ${product.name} to cart`}
                         onClick={() => {
-                          add(product.id);
-                          setAddedId(product.id);
-                          window.setTimeout(() => setAddedId(null), 1200);
-                        }}
+  add(product.id);
+  setAddedId(product.id);
+  notifyAdded(product.name, () => navigate({ to: "/cart" }));
+  window.setTimeout(() => setAddedId(null), 1200);
+}}
                         className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-110"
                       >
                         <Plus className="h-4 w-4" />

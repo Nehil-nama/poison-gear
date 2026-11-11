@@ -22,6 +22,8 @@ interface CartContextValue {
   items: CartItem[];
   count: number;
   total: number;
+  shipping: number;
+  grandTotal: number;
   add: (productId: string, qty?: number) => void;
   remove: (productId: string) => void;
   setQty: (productId: string, qty: number) => void;
@@ -30,6 +32,9 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | null>(null);
 const STORAGE_KEY = "poison-gear-cart";
+
+export const FREE_SHIPPING_THRESHOLD = 99;
+export const SHIPPING_FEE = 9;
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
@@ -89,9 +94,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const count = useMemo(() => items.reduce((n, i) => n + i.qty, 0), [items]);
   const total = useMemo(() => items.reduce((n, i) => n + i.qty * i.product.price, 0), [items]);
+  const shipping = total === 0 || total >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+  const grandTotal = total + shipping;
 
   return (
-    <CartContext.Provider value={{ items, count, total, add, remove, setQty, clear }}>
+    <CartContext.Provider value={{ items, count, total, shipping, grandTotal, add, remove, setQty, clear }}>
       {children}
     </CartContext.Provider>
   );
