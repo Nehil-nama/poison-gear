@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { ShoppingCart, Skull } from "lucide-react";
+import { CartDrawer } from "@/components/cart-drawer";
 import { useCart } from "@/lib/cart";
 
 const NAV = [
@@ -11,6 +13,7 @@ const NAV = [
 export function SiteHeader() {
   const { count } = useCart();
   const location = useLocation();
+  const [cartOpen, setCartOpen] = useState(false);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
@@ -42,9 +45,10 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link
-            to="/cart"
+          <button
+            type="button"
             aria-label="Open cart"
+            onClick={() => setCartOpen(true)}
             className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:border-primary/50 hover:text-primary"
           >
             <ShoppingCart className="h-5 w-5" />
@@ -53,9 +57,10 @@ export function SiteHeader() {
                 {count}
               </span>
             )}
-          </Link>
+          </button>
         </div>
       </div>
+      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </header>
   );
 }
