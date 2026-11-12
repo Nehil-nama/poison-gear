@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { Menu, ShoppingCart, Skull } from "lucide-react";
+import { Heart, Menu, ShoppingCart, Skull } from "lucide-react";
+import { useWishlist } from "@/lib/wishlist";
 import { CartDrawer } from "@/components/cart-drawer";
 import {
   Sheet,
@@ -18,6 +19,7 @@ const NAV = [
 
 export function SiteHeader() {
   const { count } = useCart();
+  const { count: wishCount } = useWishlist();
   const location = useLocation();
   const [cartOpen, setCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,6 +54,14 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Link to="/wishlist" aria-label="Open wishlist" className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:border-primary/50 hover:text-primary">
+          <Heart className="h-5 w-5" />
+          {wishCount > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-bold text-primary-foreground">
+              {wishCount}
+            </span>
+          )}
+          </Link>
           <button
             type="button"
             aria-label="Open cart"

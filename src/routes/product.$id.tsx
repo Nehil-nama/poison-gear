@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Check, Minus, Plus, ShieldCheck, Star, Truck } from "lucide-react";
+import { ArrowLeft, Heart, Check, Minus, Plus, ShieldCheck, Star, Truck } from "lucide-react";
+import { useWishlist } from "@/lib/wishlist";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
@@ -35,6 +36,8 @@ function ProductPage() {
 function ProductView({ product }: { product: Product }) {
   const { add } = useCart();
   const navigate = useNavigate();
+  const { has, toggle } = useWishlist();
+  const wished = has(product.id);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -147,6 +150,20 @@ function ProductView({ product }: { product: Product }) {
                     "Add to cart"
                   )}
                 </button>
+
+                <button
+  type="button"
+  aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
+  aria-pressed={wished}
+  onClick={() => toggle(product.id)}
+  className="flex h-11 w-11 items-center justify-center rounded-xl border border-border transition-colors hover:border-primary/60"
+>
+  <Heart
+    className={`h-5 w-5 transition-colors ${
+      wished ? "fill-primary text-primary" : "text-foreground"
+    }`}
+  />
+</button>
               </div>
 
               <ul className="mt-10 space-y-3">
