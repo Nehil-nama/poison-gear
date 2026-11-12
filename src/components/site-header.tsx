@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { ShoppingCart, Skull } from "lucide-react";
+import { Menu, ShoppingCart, Skull } from "lucide-react";
 import { CartDrawer } from "@/components/cart-drawer";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { useCart } from "@/lib/cart";
 
 const NAV = [
@@ -14,6 +20,7 @@ export function SiteHeader() {
   const { count } = useCart();
   const location = useLocation();
   const [cartOpen, setCartOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
@@ -58,8 +65,51 @@ export function SiteHeader() {
               </span>
             )}
           </button>
+
+          <button
+            type="button"
+            aria-label="Open menu"
+            onClick={() => setMenuOpen(true)}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:border-primary/50 hover:text-primary md:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
         </div>
       </div>
+
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+        <SheetContent
+          side="left"
+          className="w-72 border-border bg-background p-0"
+        >
+          <div className="border-b border-border p-6">
+            <SheetTitle className="font-display text-lg font-bold tracking-widest uppercase text-foreground">
+              Poison<span className="text-primary text-glow">Gear</span>
+            </SheetTitle>
+            <SheetDescription className="sr-only">Site navigation</SheetDescription>
+          </div>
+          <nav className="flex flex-col p-4">
+            {[{ label: "Home", to: "/" }, ...NAV].map((item) => {
+              const active = location.pathname === item.to;
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMenuOpen(false)}
+                  className={`rounded-lg px-4 py-3 font-display text-base font-semibold uppercase tracking-wider transition-colors ${
+                    active
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-card hover:text-foreground"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </SheetContent>
+      </Sheet>
+
       <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </header>
   );
