@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
 import { TOXIC_PRODUCTS } from "@/lib/products";
+import { DropCountdown } from "@/components/drop-countdown";
 
 export const Route = createFileRoute("/toxic")({
   head: () => ({
@@ -27,6 +28,8 @@ export const Route = createFileRoute("/toxic")({
 });
 
 function ToxicPage() {
+  const unitsLeft = TOXIC_PRODUCTS.reduce((n, p) => n + (p.unitsLeft ?? 0), 0);
+  const totalUnits = TOXIC_PRODUCTS.reduce((n, p) => n + (p.totalUnits ?? 0), 0);
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -46,11 +49,11 @@ function ToxicPage() {
             </p>
             <div className="mx-auto mt-8 flex max-w-md justify-center gap-6 text-sm">
               <div className="rounded-xl border border-toxic/40 bg-toxic/5 px-5 py-3">
-                <p className="font-display text-2xl font-bold text-toxic">122</p>
+                <p className="font-display text-2xl font-bold text-toxic">{unitsLeft}</p>
                 <p className="text-muted-foreground">units left</p>
               </div>
               <div className="rounded-xl border border-toxic/40 bg-toxic/5 px-5 py-3">
-                <p className="font-display text-2xl font-bold text-toxic">450</p>
+                <p className="font-display text-2xl font-bold text-toxic">{totalUnits}</p>
                 <p className="text-muted-foreground">total units</p>
               </div>
             </div>
@@ -64,15 +67,9 @@ function ToxicPage() {
             ))}
           </div>
 
-          <div className="mt-16 rounded-2xl border border-toxic/40 bg-toxic/5 p-8 text-center sm:p-12">
-            <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              NEXT DROP: <span className="text-toxic text-glow">CONTAGION</span>
-            </h2>
-            <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-              The Toxic Throne chair and Abyss Contagion pad are in final testing. Join the
-              mailing list in the footer — drops sell out in hours.
-            </p>
-          </div>
+          <div className="mt-16">
+  <DropCountdown />
+</div>
         </section>
       </main>
       <SiteFooter />
