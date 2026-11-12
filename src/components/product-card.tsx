@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Check, Plus, Star } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { notifyAdded } from "@/lib/notify";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -19,7 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <article className="aura-hover group flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
-      <div className="relative aspect-square overflow-hidden bg-panel">
+      <Link to="/product/$id" params={{ id: product.id }} className="relative block aspect-square overflow-hidden bg-panel">
         <img
           src={product.image}
           alt={product.name}
@@ -44,7 +44,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.unitsLeft} left
           </span>
         )}
-      </div>
+      </Link>
 
       <div className="flex flex-1 flex-col gap-1 p-5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -53,8 +53,14 @@ export function ProductCard({ product }: { product: Product }) {
           <span>· {product.category}</span>
         </div>
         <h3 className="font-display text-base font-semibold tracking-wide text-foreground">
-          {product.name}
-        </h3>
+  <Link
+    to="/product/$id"
+    params={{ id: product.id }}
+    className="transition-colors hover:text-primary"
+  >
+    {product.name}
+  </Link>
+</h3>
         <p className="text-sm text-muted-foreground">{product.tagline}</p>
 
         <div className="mt-auto flex items-center justify-between pt-4">
