@@ -9,6 +9,7 @@ import { useCart } from "@/lib/cart";
 import { notifyAdded } from "@/lib/notify";
 import { CATEGORY_HIGHLIGHTS, SERVICE_PERKS } from "@/lib/product-details";
 import { CATEGORY_LABELS, PRODUCTS, getProduct, type Product } from "@/lib/products";
+import { StockBar } from "@/components/stock-bar";
 
 export const Route = createFileRoute("/product/$id")({
   loader: ({ params }) => {
@@ -110,11 +111,11 @@ function ProductView({ product }: { product: Product }) {
                 <p className="text-sm text-muted-foreground">${product.price} each</p>
               )}
 
-              {product.toxic && product.unitsLeft !== undefined && (
-                <p className="mt-3 inline-flex w-fit rounded-full border border-toxic/40 bg-toxic/10 px-3 py-1 text-xs font-semibold text-toxic">
-                  Only {product.unitsLeft} units left
-                </p>
-              )}
+              {product.toxic && product.unitsLeft !== undefined && product.totalUnits && (
+  <div className="mt-4 max-w-sm">
+    <StockBar unitsLeft={product.unitsLeft} totalUnits={product.totalUnits} />
+  </div>
+)}
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-1.5">

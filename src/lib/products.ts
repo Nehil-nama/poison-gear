@@ -21,6 +21,7 @@ export interface Product {
   badge?: string;
   toxic?: boolean;
   unitsLeft?: number;
+  totalUnits?: number;
   favourite?: boolean;
 }
 
@@ -133,6 +134,7 @@ export const PRODUCTS: Product[] = [
     badge: "Limited · 100",
     toxic: true,
     unitsLeft: 37,
+    totalUnits: 100,
     favourite: true,
   },
   {
@@ -145,6 +147,7 @@ export const PRODUCTS: Product[] = [
     rating: 5.0,
     badge: "Limited · 200",
     toxic: true,
+    totalUnits: 200,
     unitsLeft: 61,
   },
   {
@@ -158,6 +161,7 @@ export const PRODUCTS: Product[] = [
     badge: "Limited · 150",
     toxic: true,
     unitsLeft: 24,
+    totalUnits: 150,
   },
 ];
 

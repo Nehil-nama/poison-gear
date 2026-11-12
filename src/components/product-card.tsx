@@ -5,6 +5,7 @@ import type { Product } from "@/lib/products";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { notifyAdded } from "@/lib/notify";
 import { useWishlist } from "@/lib/wishlist";
+import { StockBar } from "@/components/stock-bar";
 
 export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
@@ -81,6 +82,12 @@ export function ProductCard({ product }: { product: Product }) {
   </Link>
 </h3>
         <p className="text-sm text-muted-foreground">{product.tagline}</p>
+
+        {product.toxic && product.unitsLeft !== undefined && product.totalUnits && (
+  <div className="mt-3">
+    <StockBar unitsLeft={product.unitsLeft} totalUnits={product.totalUnits} />
+  </div>
+)}
 
         <div className="mt-auto flex items-center justify-between pt-4">
           <span className="font-display text-lg font-bold text-foreground">
