@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Check, Plus, Star } from "lucide-react";
+import { Check, Heart, Plus, Star } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { notifyAdded } from "@/lib/notify";
+import { useWishlist } from "@/lib/wishlist";
 
 export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
   const navigate = useNavigate();
+  const { has, toggle } = useWishlist();
+  const wished = has(product.id);
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
@@ -19,6 +22,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <article className="aura-hover group flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
+    <div className="relative">
       <Link to="/product/$id" params={{ id: product.id }} className="relative block aspect-square overflow-hidden bg-panel">
         <img
           src={product.image}
@@ -45,6 +49,21 @@ export function ProductCard({ product }: { product: Product }) {
           </span>
         )}
       </Link>
+
+      <button
+    type="button"
+    aria-label={wished ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+    aria-pressed={wished}
+    onClick={() => toggle(product.id)}
+    className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background/80 backdrop-blur-sm transition-colors hover:border-primary/60"
+  >
+    <Heart
+      className={`h-4 w-4 transition-colors ${
+        wished ? "fill-primary text-primary" : "text-foreground"
+      }`}
+    />
+  </button>
+    </div>
 
       <div className="flex flex-1 flex-col gap-1 p-5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
